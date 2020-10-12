@@ -2,13 +2,44 @@ const json = require('koa-json');
 const bodyparser = require('koa-bodyparser');
 const logger = require('koa-logger');
 const koajwt = require('koa-jwt');
-const { middleware, db: dbConfig } = require('../config');
+const fs = require('fs');
+const path = require('path');
+
+const { systemMiddleware, db: dbConfig, customMiddleware } = require('../config');
 
 module.exports = {
-  middlewareLoad(app) {
+  async middlewareLoad(app) {
+    await this.dbLoad();
+    this.systemMiddlewareLoad(app);
+    this.customMiddlewareLoad(app);
+    this.routesLoad(app);
+  },
+
+  customMiddlewareLoad(app) {
+    const middlewareDir = path.join(__dirname, '../middleware');
+
+    if (fs.existsSync(middlewareDir)) {
+      for (const key in customMiddleware) {
+        if (Object.prototype.hasOwnProperty.call(customMiddleware, key)) {
+          const middleware = customMiddleware[key];
+
+          if (middleware.enable) {
+            const filePath = path.join(middlewareDir, `${key}.js`);
+            if (fs.statSync(filePath).isFile()) {
+              console.log(`load ${key}`);
+              const middlewareObject = require(filePath)(middleware.options);
+              app.use(middlewareObject);
+            }
+          }
+        }
+      }
+    }
+  },
+
+  systemMiddlewareLoad(app) {
     const {
       koaLogger, koaJwt, crossDomain, koaJson,
-    } = middleware;
+    } = systemMiddleware;
 
     app.use(
       bodyparser({
@@ -55,25 +86,41 @@ module.exports = {
       app.use(json());
     }
 
-    this.dbLoad();
-
     return app;
   },
 
-  dbLoad() {
+  routesLoad(app) {
+    const routesDir = path.join(__dirname, '../routes');
+
+    if (fs.existsSync(routesDir)) {
+      const files = fs.readdirSync(routesDir);
+
+      files
+        .filter(file => file.includes('.') && file !== 'index.js')
+        .forEach(file => {
+          console.log(file);
+          const filePath = path.join(routesDir, file);
+
+          if (fs.statSync(filePath).isFile()) {
+            const route = require(filePath);
+            app.use(route.routes(), route.allowedMethods());
+          }
+        });
+    }
+  },
+
+  async  dbLoad() {
     const { mysql } = dbConfig;
     if (mysql.enable) {
-      // 加载配置
-      const db = require('../db/mysql/models');
-      db.sequelize
-        .authenticate()
-        .then(() => {
-          console.log('mysql connect success');
-        })
-        .catch((error) => {
-          console.log('mysql connect error', error);
-          throw error;
-        });
+      try {
+        const db = require('../db/mysql/models');
+        await db.sequelize.authenticate();
+
+        console.log('mysql connect success');
+      } catch (error) {
+        console.log('mysql connect error', error);
+        throw error;
+      }
     }
   },
 };

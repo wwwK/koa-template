@@ -6,14 +6,19 @@
 
 # 更新内容
 
-- [x] 开发基础代码 
-- [x] jwt 认证 
-- [x] 接入 redis 和 mysql 
-- [x] 增加日志去除敏感信息 
-- [x] 完善的单元测试和覆盖率测试 
+- [x] 开发基础代码
+- [x] 加载机，自动化挂载 系统中间件 ，路由 ， 定制化中间件 ， 数据库连接等 
+  - [ ] 系统中间件
+    - [x] koa-jwt 
+    - [x] koa-bodyparser
+    - [x] koa-logger
+    - [x] koa-json
+  - [ ] 数据库
+    - [x] mysql
+  - [ ] 定制化中间件
+    - [x] requestLog
 - [x] 接入压力测试模块 loadtest 
 - [x] 使用 docker 部署 
-- [x] 使用 docker-compose 对 redis , mysql ,backend 容器进行编排管理,方便快速部署 
 - [ ] 性能监测
 - [ ] 参数验证
 - [ ] 统一返回参数格式和状态

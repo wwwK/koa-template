@@ -22,5 +22,6 @@ module.exports = {
     radix: 'off',
     'no-param-reassign': 'off',
     'import/no-extraneous-dependencies': 'off',
+    'arrow-parens': 'off',
   },
 };

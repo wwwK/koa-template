@@ -2,7 +2,6 @@ const Koa = require('koa');
 const http = require('http');
 const cluster = require('cluster');
 
-const index = require('./routes');
 const initLoad = require('./common/initLoad');
 
 const {
@@ -10,15 +9,6 @@ const {
 } = require('./config');
 
 const app = new Koa();
-
-initLoad.middlewareLoad(app);
-app.use(index.routes(), index.allowedMethods());
-
-app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx);
-});
-
-const server = http.createServer(app.callback());
 
 const unhandledRejection = new Map();
 const MAX_TIME = 1000;
@@ -39,9 +29,6 @@ process.on('rejectionHandled', (promise) => {
   }
 });
 
-/**
- * 未被try catch 捕获的异常,例如异步
- */
 process.on('uncaughtException', (error) => {
   /**
    * 1.记录异常
@@ -64,38 +51,42 @@ process.on('uncaughtException', (error) => {
   }
 });
 
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+app.on('error', (err, ctx) => {
+  console.error('server error', err, ctx);
+});
 
-  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
+initLoad.middlewareLoad(app).then(() => {
+  const server = http.createServer(app.callback());
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
-      process.exit(1);
-      break;
-    default:
+  server.listen(port);
+
+  server.on('error', (error) => {
+    if (error.syscall !== 'listen') {
       throw error;
-  }
-}
+    }
 
-function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
-  console.log(`Listening on ${bind}`);
-}
+    const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
-server.listen(port);
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+      case 'EACCES':
+        console.error(`${bind} requires elevated privileges`);
+        process.exit(1);
+        break;
+      case 'EADDRINUSE':
+        console.error(`${bind} is already in use`);
+        process.exit(1);
+        break;
+      default:
+        throw error;
+    }
+  });
 
-server.on('error', onError);
-
-server.on('listening', onListening);
-
-module.exports = server;
+  server.on('listening', () => {
+    const addr = server.address();
+    const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+    console.log(`Listening on ${bind}`);
+  });
+}).catch(err => {
+  console.error(err);
+});

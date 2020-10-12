@@ -54,7 +54,7 @@ module.exports = {
       },
     },
   },
-  middleware: {
+  systemMiddleware: {
     koaLogger: {
       enable: true,
       options: {},
@@ -73,6 +73,12 @@ module.exports = {
     },
     koaJson: {
       enable: true,
+      options: {},
+    },
+  },
+  customMiddleware: {
+    requestLog: {
+      enable: false,
       options: {},
     },
   },
