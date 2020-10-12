@@ -6,18 +6,17 @@
 
 # 更新内容
 
-- 开发基础代码 [完成]
-- 实现 jwt 认证 [完成]
-- 接入 redis 和 mysql [完成]
-- 增加日志去除敏感信息 [完成]
-- 实现 MySQL 多表查询（一对一，一对多）和锁 [完成]
-- 使用 redis 提升查询效率 [完成]
-- 完善的单元测试和覆盖率测试 [完成]
-- 接入压力测试模块 loadtest 实现单接口压力测试 [完成]
-- 使用 docker 部署 [完成]
-- 使用 docker-compose 对 redis , mysql ,backend 容器进行编排管理,方便快速部署 [完成]
-- 性能监测
-- 考虑写入前端代码
+- [x] 开发基础代码 
+- [x] jwt 认证 
+- [x] 接入 redis 和 mysql 
+- [x] 增加日志去除敏感信息 
+- [x] 完善的单元测试和覆盖率测试 
+- [x] 接入压力测试模块 loadtest 
+- [x] 使用 docker 部署 
+- [x] 使用 docker-compose 对 redis , mysql ,backend 容器进行编排管理,方便快速部署 
+- [ ] 性能监测
+- [ ] 参数验证
+- [ ] 统一返回参数格式和状态
 
 # 内容
 
@@ -53,9 +52,9 @@
 #### 下载
 
 ```sh
-git clone https://github.com/ddzyan/back_end.git
+git clone https://github.com/ddzyan/koa-template.git
 
-cd back_end
+cd koa-template
 ```
 
 #### 修改配置文件
