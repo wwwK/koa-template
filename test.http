@@ -1,0 +1,12 @@
+### 根据镜像名称获取Cid
+GET http://127.0.0.1:5000/image/getCidByImageName?imageName="mysql:5.7" HTTP/1.1
+
+
+### 添加镜像
+POST http://127.0.0.1:5000/image/addImage HTTP/1.1
+content-type: application/json
+
+{
+    "imageName": "mysql:5.7",
+    "cid": "QmWK93BYRUkgPvsWuAj7fo1VJ7mvU1sMz42efumx7t6gsg"
+}
