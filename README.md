@@ -1,3 +1,4 @@
+![ci/cd](https://github.com/ddzyan/koa-template/workflows/Nodejs-backend/badge.svg)
 # 简介
 
 基于 koa 改造，可以开箱即用的后端框架，实现的功能如下：
