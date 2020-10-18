@@ -6,7 +6,7 @@
     "start": "node app.js",
     "dev": "./node_modules/.bin/nodemon bin/www",
     "prd": "pm2 start bin/www",
-    "test": "mocha",
+    "test": "mocha --bail --timeout 30000 --recursive --slow 1000 --exit",
     "initDB": "node ./db/mysql/syncDB.js",
     "eslint": "eslint . --fix",
     "coverage": "nyc --reporter=text npm run test",

@@ -1,0 +1,20 @@
+name: back-end/.TENCETN_CLOUD_HOST
+on:
+  push:
+    branches:
+    - master
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npm.taobao.org
+      - run: npm ci
+      - run: npm test
+        env: # 注入环境变量，可选
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

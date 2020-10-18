@@ -8,8 +8,9 @@ const path = require('path');
 const { systemMiddleware, db: dbConfig, customMiddleware } = require('../config');
 
 module.exports = {
-  async middlewareLoad(app) {
-    await this.dbLoad();
+  // 中间件加载
+  middlewareLoad(app) {
+    this.dbLoad();
     this.systemMiddlewareLoad(app);
     this.customMiddlewareLoad(app);
     this.routesLoad(app);
@@ -26,7 +27,7 @@ module.exports = {
           if (middleware.enable) {
             const filePath = path.join(middlewareDir, `${key}.js`);
             if (fs.statSync(filePath).isFile()) {
-              console.log(`load ${key}`);
+              console.log('[customMiddlewareLoad]', `load ${key}`);
               const middlewareObject = require(filePath)(middleware.options);
               app.use(middlewareObject);
             }
@@ -41,6 +42,7 @@ module.exports = {
       koaLogger, koaJwt, crossDomain, koaJson,
     } = systemMiddleware;
 
+    console.log('[systemMiddlewareLoad] bodyparser');
     app.use(
       bodyparser({
         enableTypes: ['json', 'form', 'text'],
@@ -51,7 +53,7 @@ module.exports = {
     );
 
     if (crossDomain.enable) {
-      console.log('crossDomain 已启动');
+      console.log('[systemMiddlewareLoad] crossDomain');
       app.use(async (ctx, next) => {
         ctx.set('Access-Control-Allow-Origin', '*');
         ctx.set(
@@ -68,7 +70,7 @@ module.exports = {
     }
 
     if (koaJwt.enable) {
-      console.log('koa-jwt 已启动');
+      console.log('[systemMiddlewareLoad] koa-jwt');
       app.use(
         koajwt({ secret: koaJwt.options.secret }).unless({
           path: [/\/loginUser/],
@@ -77,12 +79,12 @@ module.exports = {
     }
 
     if (koaLogger.enable) {
-      console.log('koa-logger 已启动');
+      console.log('[systemMiddlewareLoad] koa-logger');
       app.use(logger());
     }
 
     if (koaJson.enable) {
-      console.log('koa-json 已启动');
+      console.log('[systemMiddlewareLoad] koa-json');
       app.use(json());
     }
 
@@ -98,7 +100,7 @@ module.exports = {
       files
         .filter(file => file.includes('.') && file !== 'index.js')
         .forEach(file => {
-          console.log(file);
+          console.log('[routesLoad]', file);
           const filePath = path.join(routesDir, file);
 
           if (fs.statSync(filePath).isFile()) {
@@ -109,16 +111,16 @@ module.exports = {
     }
   },
 
-  async  dbLoad() {
+  async dbLoad() {
     const { mysql } = dbConfig;
     if (mysql.enable) {
       try {
         const db = require('../db/mysql/models');
         await db.sequelize.authenticate();
 
-        console.log('mysql connect success');
+        console.log('[dbLoad] mysql connect success');
       } catch (error) {
-        console.log('mysql connect error', error);
+        console.error('[dbLoad] mysql connect success', error);
         throw error;
       }
     }

@@ -6,7 +6,7 @@ module.exports = {
     redis: {
       enable: false,
       option: {
-        url: 'redis://111.231.215.55:6379/1',
+        url: 'redis://127.0.0.1:6379/1',
       },
     },
     mysql: {
@@ -56,7 +56,7 @@ module.exports = {
   },
   systemMiddleware: {
     koaLogger: {
-      enable: true,
+      enable: false,
       options: {},
     },
     koaJwt: {
@@ -78,7 +78,11 @@ module.exports = {
   },
   customMiddleware: {
     requestLog: {
-      enable: false,
+      enable: true,
+      options: {},
+    },
+    responseFormat: {
+      enable: true,
       options: {},
     },
   },
