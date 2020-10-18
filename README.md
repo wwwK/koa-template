@@ -26,8 +26,10 @@ npm install
 npm start 
 
 # 单元测试
-
 npm test
+
+# debug
+npm run dev
 ```
 
 如需定制需要修改 config/index.js 配置
