@@ -1,9 +1,9 @@
-const formatRequest = ctx => {
+const formatRequest = (ctx) => {
   const {
-    request: { method, originalUrl },
+    request: { method, originalUrl, body = { } },
   } = ctx;
 
-  console.log(`<--- ${originalUrl} ${method} `);
+  console.log(`<--- ${originalUrl} ${method} ${JSON.stringify(body)}`);
 };
 
 const formatResponse = (ctx, ms) => {
@@ -17,7 +17,7 @@ const formatResponse = (ctx, ms) => {
   console.log(`---> ${originalUrl} ${method} ${resData} ${status} ${ms}ms`);
 };
 
-const formatError = error => {
+const formatError = (error) => {
   let logText = '';
   if (error instanceof Error) {
     logText = `${error.message}\n`;
@@ -35,6 +35,7 @@ module.exports = () => async (ctx, next) => {
     formatRequest(ctx);
   } catch (error) {
     formatError(error);
+    // throw error;
   } finally {
     formatResponse(ctx, new Date() - startTime);
   }
