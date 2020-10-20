@@ -1,6 +1,0 @@
---bail
---timeout 30000
---recursive
---slow 1000
---require intelli-espower-loader
---exit
