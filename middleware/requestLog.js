@@ -3,7 +3,7 @@ const formatRequest = (ctx) => {
     request: { method, originalUrl, body = { } },
   } = ctx;
 
-  console.log(`<--- ${originalUrl} ${method} ${JSON.stringify(body)}`);
+  console.log(`[${new Date().toLocaleString()}] <--- ${originalUrl} ${method} ${JSON.stringify(body)}`);
 };
 
 const formatResponse = (ctx, ms) => {
@@ -14,7 +14,7 @@ const formatResponse = (ctx, ms) => {
   } = ctx;
   const resData = typeof body === 'object' ? JSON.stringify(body) : body;
 
-  console.log(`---> ${originalUrl} ${method} ${resData} ${status} ${ms}ms`);
+  console.log(`[${new Date().toLocaleString()}] ---> ${originalUrl} ${method} ${resData} ${status} ${ms}ms`);
 };
 
 const formatError = (error) => {
@@ -25,7 +25,7 @@ const formatError = (error) => {
   } else {
     logText = error;
   }
-  console.error(logText);
+  console.error(`[${new Date().toLocaleString()}] ${logText}`);
 };
 
 module.exports = () => async (ctx, next) => {
