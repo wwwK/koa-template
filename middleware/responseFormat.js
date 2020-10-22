@@ -32,5 +32,6 @@ module.exports = () => async (ctx, next) => {
       message,
       data: {},
     };
+    throw error; // 继续抛出错误，由上层处理
   }
 };
