@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {
   db: { mongodbConfig },
-} = require('../../config/index');
+} = require('../../config/config_default');
 
 mongoose.connect(mongodbConfig.url, { useNewUrlParser: true });
 

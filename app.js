@@ -1,29 +1,26 @@
 const Koa = require('koa');
 const http = require('http');
-const cluster = require('cluster');
 
 const initLoad = require('./common/initLoad');
 
-const {
-  server: { port },
-} = require('./config');
-
 const app = new Koa();
 
-const unhandledRejection = new Map();
-const MAX_TIME = 1000;
+// 执行初始化，失败则不启动程序
+initLoad.middlewareLoad(app);
 
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx);
 });
 
-initLoad.middlewareLoad(app);
-
 const server = http.createServer(app.callback());
 
-server.listen(port);
+server.on('listening', () => {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  console.log(`Listening on ${bind}`);
+});
 
-server.on('error', error => {
+server.on('error', (error) => {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -42,43 +39,6 @@ server.on('error', error => {
       break;
     default:
       throw error;
-  }
-});
-
-server.on('listening', () => {
-  const addr = server.address();
-  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
-  console.log(`Listening on ${bind}`);
-});
-
-process.on('uncaughtException', error => {
-  console.log('uncaughtException :', error);
-
-  const killTimer = setTimeout(() => {
-    process.exit(1);
-  }, 1000);
-
-  killTimer.unref(); // 一次事件轮询结束后执行
-
-  server.close();
-  if (cluster.worker) {
-    cluster.worker.disconnect();
-  }
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  unhandledRejection.set(promise, reason);
-
-  setTimeout(() => {
-    unhandledRejection.delete(promise);
-    console.log('unhandledRejection :', reason);
-  }, MAX_TIME);
-});
-
-process.on('rejectionHandled', promise => {
-  if (unhandledRejection.has(promise)) {
-    unhandledRejection.delete(promise);
-    console.log('移除未被捕获的promise map');
   }
 });
 

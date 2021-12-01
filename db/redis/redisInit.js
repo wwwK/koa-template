@@ -9,7 +9,7 @@ const Redis = require('ioredis');
 
 const {
   db: { redisConfig },
-} = require('../../config/index');
+} = require('../../config/config_default');
 
 const redis = new Redis(redisConfig.url);
 

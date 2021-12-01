@@ -5,3 +5,4 @@ logs
 .nyc_output
 .vscode
 yarn-error.log
+config/config_local.js

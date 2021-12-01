@@ -5,7 +5,11 @@ const koajwt = require('koa-jwt');
 const fs = require('fs');
 const path = require('path');
 
-const { systemMiddleware, db: dbConfig, customMiddleware } = require('../config');
+const {
+  systemMiddleware,
+  db: dbConfig,
+  customMiddleware,
+} = require('../config');
 
 module.exports = {
   // 中间件加载
@@ -37,6 +41,7 @@ module.exports = {
     }
   },
 
+  // 加载系统定制化中间件
   systemMiddlewareLoad(app) {
     const {
       koaLogger, koaJwt, crossDomain, koaJson,
@@ -98,8 +103,8 @@ module.exports = {
       const files = fs.readdirSync(routesDir);
 
       files
-        .filter(file => file.includes('.') && file !== 'index.js')
-        .forEach(file => {
+        .filter((file) => file.includes('.') && file !== 'index.js')
+        .forEach((file) => {
           console.log('[routesLoad]', file);
           const filePath = path.join(routesDir, file);
 
