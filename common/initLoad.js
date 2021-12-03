@@ -5,6 +5,8 @@ const koajwt = require('koa-jwt');
 const fs = require('fs');
 const path = require('path');
 
+const db = require('../db/mysql/models');
+
 const {
   systemMiddleware,
   db: dbConfig,
@@ -20,6 +22,7 @@ module.exports = {
     this.routesLoad(app);
   },
 
+  // 加载用户定制化中间件
   customMiddlewareLoad(app) {
     const middlewareDir = path.join(__dirname, '../middleware');
 
@@ -96,6 +99,7 @@ module.exports = {
     return app;
   },
 
+  // 遍历加载路由
   routesLoad(app) {
     const routesDir = path.join(__dirname, '../routes');
 
@@ -120,7 +124,6 @@ module.exports = {
     const { mysql } = dbConfig;
     if (mysql.enable) {
       try {
-        const db = require('../db/mysql/models');
         await db.sequelize.authenticate();
 
         console.log('[dbLoad] mysql connect success');

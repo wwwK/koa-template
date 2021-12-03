@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/server.js",
-    "debug": "./node_modules/.bin/nodemon ./bin/server.js",
+    "start": "pm2 start ./start.config.js --no-daemon",
+    "debug": "node -r dotenv/config ./node_modules/.bin/nodemon ./bin/server.js",
     "prd": "pm2 start bin/www",
     "test": "mocha --bail --timeout 30000 --recursive --slow 1000 --exit",
     "initDB": "node ./db/mysql/syncDB.js",
@@ -16,6 +16,7 @@
     "@koa/router": "^9.4.0",
     "cors": "^2.8.5",
     "debug": "^4.2.0",
+    "dotenv": "^10.0.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.21.4",

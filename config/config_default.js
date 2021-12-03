@@ -10,7 +10,7 @@ module.exports = {
       },
     },
     mysql: {
-      enable: true,
+      enable: false,
       options: {
         username: 'root',
         password: '123456',
